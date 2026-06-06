@@ -1,47 +1,28 @@
 package org.example.testrestsoap.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.test.generated.GetCounterRequestDto;
 import org.example.test.generated.TestIncrementRequestDto;
-import org.example.test.generated.TestResponseDto;
 import org.example.testrestsoap.service.TestService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
-import org.springframework.ws.server.endpoint.annotation.RequestPayload;
-import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @RestController
 @RequestMapping("/api/test")
 @RequiredArgsConstructor
+@ResponseStatus(HttpStatus.OK)
 public class TestRestController {
 
     private final TestService testService;
 
     @PostMapping("/increment")
-    public TestResponseDto incrementCounter(@RequestBody TestIncrementRequestDto testRequestDto) {
-        TestResponseDto testResponseDto;
-        try {
-            testResponseDto = testService.incrementCounter(testRequestDto);
-        } catch (Exception e) {
-            testResponseDto = new TestResponseDto();
-
-            testResponseDto.setMessage(e.getMessage());
-        }
-
-        return testResponseDto;
+    public ResponseEntity<?> incrementCounter(@RequestBody TestIncrementRequestDto testRequestDto) {
+        return new ResponseEntity<>(testService.incrementCounter(testRequestDto), HttpStatus.OK);
     }
 
     @GetMapping("/counter/{counterId}")
-    public TestResponseDto getCounter(@PathVariable Long counterId) {
-        try {
-            return testService.getCounterById(counterId);
-        } catch (Exception e) {
-            TestResponseDto testResponseDto = new TestResponseDto();
-
-            testResponseDto.setMessage(e.getMessage());
-
-            return testResponseDto;
-        }
+    public ResponseEntity getCounter(@PathVariable Long counterId) {
+        return new ResponseEntity<>(testService.getCounterById(counterId), HttpStatus.OK);
     }
 
 }
