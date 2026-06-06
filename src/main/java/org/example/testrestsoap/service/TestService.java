@@ -1,7 +1,7 @@
 package org.example.testrestsoap.service;
 
-import org.example.test.generated.TestIncrementRequestDto;
-import org.example.test.generated.TestResponseDto;
+import org.example.testrestsoap.dto.TestIncrementRequestDto;
+import org.example.testrestsoap.dto.TestResponseDto;
 import org.example.testrestsoap.entity.TestEntity;
 import org.springframework.stereotype.Service;
 

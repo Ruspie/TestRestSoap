@@ -98,32 +98,42 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>3.1.0</version>
+            <!--<plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>xjc</id>
+                        <id>pre-integration-test</id>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <sources>
-                        <source>src/main/resources/xsd/test.xsd</source>
-                    </sources>
-                    <outputDirectory>${project.build.directory}/generated-sources/jaxb</outputDirectory>
-                    <clearOutputDir>false</clearOutputDir>
-
-                    <!-- НАСТРОЙКА ДЛЯ BIGDECIMAL -->
-                    <globalBindings>
-                        <xjc:simple />
-                        <jaxb:serializable uid="1"/>
-                    </globalBindings>
+                    <apiDocsUrl>http://localhost:8099/v3/api-docs.yaml</apiDocsUrl>
+                    <outputFileName>api-docs-plugin.yaml</outputFileName>
+                    <outputDir>${project.basedir}/src/main/resources</outputDir>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 

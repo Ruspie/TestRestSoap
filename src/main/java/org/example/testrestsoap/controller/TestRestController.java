@@ -1,7 +1,8 @@
 package org.example.testrestsoap.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.test.generated.TestIncrementRequestDto;
+import org.example.testrestsoap.dto.TestIncrementRequestDto;
+import org.example.testrestsoap.dto.TestResponseDto;
 import org.example.testrestsoap.service.TestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

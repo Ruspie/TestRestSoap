@@ -1,6 +1,7 @@
 package org.example.testrestsoap.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.testrestsoap.dto.ErrorResponseDto;
 import org.example.testrestsoap.dto.FileResponseDto;
 import org.example.testrestsoap.service.FileService;
 import org.springframework.core.io.Resource;
