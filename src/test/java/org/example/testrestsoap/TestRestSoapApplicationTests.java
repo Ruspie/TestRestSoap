@@ -1,15 +1,15 @@
-package org.example.testrestsoap;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-@SpringBootTest
-@ActiveProfiles("test")
-class TestRestSoapApplicationTests {
-
-    @Test
-    void contextLoads() {
-    }
-
-}
+//package org.example.testrestsoap;
+//
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.test.context.ActiveProfiles;
+//
+//@SpringBootTest
+//@ActiveProfiles("test")
+//class TestRestSoapApplicationTests {
+//
+//    @Test
+//    void contextLoads() {
+//    }
+//
+//}

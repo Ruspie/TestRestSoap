@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.testrestsoap.dto.ErrorResponseDto;
 import org.example.testrestsoap.dto.FileResponseDto;
 import org.example.testrestsoap.service.FileService;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/test/file")
 @RequiredArgsConstructor
