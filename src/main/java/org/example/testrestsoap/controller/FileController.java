@@ -2,6 +2,7 @@ package org.example.testrestsoap.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,41 +21,49 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@Tag(name = "File", description = "Запросы для работы с файлами")
 @RestController
 @RequestMapping("/api/test/file")
 @RequiredArgsConstructor
-@Tag(name = "File", description = "Запросы для работы с файлами")
 public class FileController {
 
     private final FileService fileService;
 
-    @Operation(summary = "Загрузить файл в хранилище", description = "Загрузка на сервер файла пользователя")
-    @ApiResponse(responseCode = "200", description = "Файл успешно загружен", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponseDto.class)))
-    @ApiResponse(responseCode = "400", description = "Ошибка загрузки файла", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)))
+    @Operation(summary = "Загрузка файла", description = "Запрос для загрузки файла по имени файла")
+    @ApiResponse(responseCode = "200", description = "Успешное выполнение запроса", content = @Content(
+         mediaType = "application/json", schema = @Schema(implementation = FileResponseDto.class)
+    ))
+    @ApiResponse(responseCode = "400", description = "Выполнение запроса с ошибкой", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)
+    ))
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadFile(
-            @Parameter(description = "Переменная файл", example = "photo_2026-03-20_00-21-11.jpg")
-            @RequestParam("file") MultipartFile file
-    ) {
-        String fileName = fileService.storeFile(file);
+    public ResponseEntity<?> uploadFile(@Parameter(description = "Имя файла") @RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = fileService.storeFile(file);
 
-        FileResponseDto fileResponseDto = new FileResponseDto(
-                LocalDateTime.now(),
-                "Успешно загружен!",
-                Collections.singletonList(fileName)
-        );
+            FileResponseDto fileResponseDto = new FileResponseDto(
+                    LocalDateTime.now(),
+                    "Успешно загружен!",
+                    Collections.singletonList(fileName)
+            );
 
-        return new ResponseEntity<>(fileResponseDto, HttpStatus.OK);
+            return new ResponseEntity<>(fileResponseDto, HttpStatus.OK);
+        } catch (Throwable e) {
+            return new ResponseEntity<>(new ErrorResponseDto(LocalDateTime.now(), 400, "Ошибка"), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @Operation(summary = "Получение информации о всех файлах в хранилище", description = "Получение файлов")
-    @ApiResponse(responseCode = "200", description = "Данные получены", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponseDto.class)))
-    @ApiResponse(responseCode = "400", description = "Ошибка получения данных", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)))
+    @Operation(summary = "Получения списка файлов", description = "Запрос для получения списка файлов, которые хранятся на сервере")
+    @ApiResponse(responseCode = "200", description = "Успешное выполнение запроса", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = FileResponseDto.class)
+    ))
+    @ApiResponse(responseCode = "400", description = "Выполнение запроса с ошибкой", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)
+    ))
     @GetMapping
     public ResponseEntity<?> getListFiles() {
         List<String> files = fileService.getListFiles();
@@ -68,14 +77,15 @@ public class FileController {
         return new ResponseEntity<>(fileResponseDto, HttpStatus.OK);
     }
 
-    @Operation(summary = "Получение файла из хралища", description = "Загрузка файла с сервера")
-    @ApiResponse(responseCode = "200", description = "Данные получены", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Resource.class)))
-    @ApiResponse(responseCode = "400", description = "Ошибка получения данных", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)))
+    @Operation(summary = "Получение файла", description = "Запрос для получения файла с хранилища на сервере")
+    @ApiResponse(responseCode = "200", description = "Успешное выполнение запроса", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = Resource.class)
+    ))
+    @ApiResponse(responseCode = "400", description = "Выполнение запроса с ошибкой", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)
+    ))
     @GetMapping("/download")
-    public ResponseEntity<?> getFile(
-            @Parameter(description = "Переменная имени файла", example = "photo_2026-03-20_00-21-11.jpg")
-            @RequestParam String fileName
-    ) {
+    public ResponseEntity<?> getFile(@Parameter(description = "Имя файла") @RequestParam String fileName) {
         Resource file = fileService.getFile(fileName);
 
         return ResponseEntity
@@ -85,14 +95,15 @@ public class FileController {
                 .body(file);
     }
 
-    @Operation(summary = "Удаление файла из хралища", description = "Удаление файла с сервера")
-    @ApiResponse(responseCode = "200", description = "Файл удален", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileResponseDto.class)))
-    @ApiResponse(responseCode = "400", description = "Ошибка удаления файла", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)))
+    @Operation(summary = "Удаление файла", description = "Запрос для удаления файла по имени файла")
+    @ApiResponse(responseCode = "200", description = "Успешное выполнение запроса", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = FileResponseDto.class)
+    ))
+    @ApiResponse(responseCode = "400", description = "Выполнение запроса с ошибкой", content = @Content(
+            mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class)
+    ))
     @DeleteMapping
-    public ResponseEntity<?> deleteFile(
-            @Parameter(description = "Переменная имени файла", example = "photo_2026-03-20_00-21-11.jpg")
-            @RequestParam String fileName
-    ) {
+    public ResponseEntity<?> deleteFile(@Parameter(description = "Имя файла") @RequestParam String fileName) {
         fileService.deleteFile(fileName);
 
         FileResponseDto fileResponseDto = new FileResponseDto(

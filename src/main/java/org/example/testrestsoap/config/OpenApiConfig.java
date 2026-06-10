@@ -6,29 +6,33 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(info = @Info(
-        title = "TestRestSoap API",
-        description = "Документация для проекта TestRestSoap",
+        title = "TestRestApi",
+        description = "Документация к проекту TestRestSoap",
         contact = @Contact(
-                name = "Ruspie",
-                url = "https://github.com/Ruspie/TestRestSoap",
-                email = "begun4ik2@gmail.com"
+                name = "Alex Begun",
+                url = "https://github.com/Ruspie/TestRestSoap.git",
+                email = "testEmail@gmail.com"
         ),
-        summary = "TestRestSoap API Documentation",
+        summary = "TestRestSoap API",
         version = "1.0.0"
 ))
 @Configuration
 public class OpenApiConfig {
 
     /*@Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("TestRestSoap API")
-                        .version("1.0")
-                        .description("Документация для проекта TestRestSoap")
-                        .contact(new Contact()
-                                .name("Ruspie")
-                                .url("https://github.com/Ruspie/TestRestSoap")));
+    public OpenAPI openAPI() {
+        return new OpenAPI().
+                info(new io.swagger.v3.oas.models.info.Info()
+                        .title("TestRestApi")
+                        .description("Документация к проекту TestRestSoap")
+                        .contact(new io.swagger.v3.oas.models.info.Contact()
+                                .name("Alex Begun")
+                                .email("testEmail@gmail.com")
+                                .url("https://github.com/Ruspie/TestRestSoap.git")
+                        )
+                        .summary("TestRestSoap API")
+                        .version("1.0.0")
+                );
     }*/
 
 }

@@ -4,23 +4,21 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-@Schema(description = "Сущность информация о файлах")
+@Schema(description = "Объект для ответа на запрос по файлам")
 public class FileResponseDto {
 
-    @Schema(description = "Время исполнения запроса", example = "1")
+    @Schema(description = "Время запроса", type = "string", format = "local-date-time", example = "2026-06-09T22:31:09.1155959")
     private LocalDateTime timestamp;
-    @Schema(description = "Сообщение о файле", example = "Файл загружен")
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "Сообщение", example = "Успешно обработано")
     private String message;
-    @Schema(description = "Список имен файлов", example = "123, 123")
+    @Schema(description = "Список файлов", example = "photo_2026-03-20_00-21-11.jpg, photo_2026-03-20_00-21-11.jpg")
     private List<String> fileNameList;
 
 }
