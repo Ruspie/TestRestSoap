@@ -3,6 +3,8 @@ package org.example.testrestsoap.service;
 import org.example.testrestsoap.dto.TestIncrementRequestDto;
 import org.example.testrestsoap.dto.TestResponseDto;
 import org.example.testrestsoap.entity.TestEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,11 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class TestService {
 
+    private final Logger logger = LoggerFactory.getLogger(TestService.class);
+
     private Map<Long, TestEntity> storageMap = new ConcurrentHashMap<>();
 
     public TestService() {
         storageMap.put(1L, new TestEntity(1L, "test1", BigDecimal.valueOf(111)));
         storageMap.put(2L, new TestEntity(2L, "test2", BigDecimal.valueOf(222)));
+
+        logger.info("INIT TestService");
     }
 
     public TestResponseDto getCounterById(Long id) {

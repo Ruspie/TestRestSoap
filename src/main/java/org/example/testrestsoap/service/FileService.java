@@ -1,6 +1,9 @@
 package org.example.testrestsoap.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.testrestsoap.exception.FileException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,6 +20,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
@@ -29,6 +33,8 @@ public class FileService {
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при создании каталога!");
         }
+
+        log.info("INIT FileService");
     }
 
     public String storeFile(MultipartFile file) {

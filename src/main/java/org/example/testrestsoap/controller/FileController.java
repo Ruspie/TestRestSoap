@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-@Slf4j
 @Tag(name = "File", description = "Запросы для работы с файлами")
 @RestController
 @RequestMapping("/api/test/file")
