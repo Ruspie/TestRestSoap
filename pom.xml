@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.4.3</version> <!-- Стабильная ветка 3.x для Java 17 -->
+        <relativePath/>
     </parent>
     <groupId>org.example</groupId>
     <artifactId>TestRestSoap</artifactId>
@@ -16,13 +16,12 @@
 
     <properties>
         <java.version>17</java.version>
-        <!-- Выносим версии внешних библиотек в свойства -->
         <lombok.version>1.18.36</lombok.version>
-        <springdoc.version>3.0.2</springdoc.version>
+        <springdoc.version>2.8.5</springdoc.version> <!-- Версия для Spring Boot 3 -->
     </properties>
 
     <dependencies>
-        <!-- Основной веб-стартер с исключением стандартного логирования -->
+        <!-- Веб-стартер без стандартного логирования -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -34,11 +33,10 @@
             </exclusions>
         </dependency>
 
-        <!-- Аспектно-ориентированное программирование -->
+        <!-- Аспектно-ориентированное программирование (управляется parent) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-            <version>3.2.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -47,7 +45,6 @@
             </exclusions>
         </dependency>
 
-        <!-- Генерация кода Boilerplate (версия управляется parent-ом, но для процессора плагина лучше объявить явно) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -55,7 +52,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Документация OpenAPI / Swagger, адаптированная под Spring Boot 4 -->
+        <!-- Swagger UI для Spring Boot 3 -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -81,7 +78,7 @@
             </exclusions>
         </dependency>
 
-       <dependency> <groupId>org.apache.logging.log4j</groupId>
+        <dependency> <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.24.1</version>
         </dependency>
@@ -98,15 +95,39 @@
             <version>2.24.1</version>
         </dependency>
 
-        <!--<dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>-->
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Плагин Spring Boot (оставляем один экземпляр) -->
+            <!-- Плагин компилятора, который заставляет Maven обрабатывать аннотации Lombok -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version> <!-- Фиксируем стабильную версию плагина -->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <!-- Включаем процессор аннотаций, без которого Lombok «слепнет» -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- Плагин Spring Boot для сборки исполняемого jar-архива -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -117,23 +138,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-
-            <!-- Исправленный плагин компилятора: добавлен тег <version> для Lombok -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>
