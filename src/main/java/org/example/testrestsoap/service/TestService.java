@@ -26,7 +26,8 @@ public class TestService {
 
             return testRequestDto;
         } catch (Exception e) {
-            throw new RuntimeException("Counter not found");
+            System.out.println("Error: " + e.getMessage());
+            throw e;
         }
     }
 
