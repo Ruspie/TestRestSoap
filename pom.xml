@@ -45,6 +45,7 @@
             </exclusions>
         </dependency>
 
+        <!-- Ломбок -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -95,6 +96,7 @@
             <version>2.24.1</version>
         </dependency>
 
+        <!-- Работа с БД -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
