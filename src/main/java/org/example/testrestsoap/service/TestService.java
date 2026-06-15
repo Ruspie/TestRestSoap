@@ -1,27 +1,36 @@
 package org.example.testrestsoap.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.testrestsoap.dto.TestIncrementRequestDto;
 import org.example.testrestsoap.dto.TestResponseDto;
 import org.example.testrestsoap.entity.TestEntity;
+import org.example.testrestsoap.repository.TestRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class TestService {
 
-    private Map<Long, TestEntity> storageMap = new ConcurrentHashMap<>();
+    private final TestRepository testRepository;
 
-    public TestService() {
-        storageMap.put(1L, new TestEntity(1L, "test1", BigDecimal.valueOf(111)));
-        storageMap.put(2L, new TestEntity(2L, "test2", BigDecimal.valueOf(222)));
+    public Integer sum(Integer first, Integer second) {
+        return first + second;
     }
 
     public TestResponseDto getCounterById(Long id) {
         try {
-            TestEntity testEntity = storageMap.get(id);
+            log.info("Called getCounterById");
+
+            Optional<TestEntity> testEntityOptional = testRepository.findById(id);
+
+            TestEntity testEntity = testEntityOptional.get();
 
             TestResponseDto testRequestDto = new TestResponseDto();
             testRequestDto.setId(testEntity.getId());
@@ -36,11 +45,15 @@ public class TestService {
     }
 
     public TestResponseDto incrementCounter(TestIncrementRequestDto testRequestDto) {
-        if (!storageMap.containsKey(testRequestDto.getId()))
-            throw new RuntimeException("Data not found!");
+        log.info("Called incrementCounter");
 
-        TestEntity testEntity = storageMap.get(testRequestDto.getId());
+        TestEntity testEntity = testRepository.findById(testRequestDto.getId()).orElseThrow(() -> {
+            throw new RuntimeException("Data not found!");
+        });
+
         testEntity.setCounter(testEntity.getCounter().add(testRequestDto.getIncrementForCounter()));
+
+        testRepository.save(testEntity);
 
         TestResponseDto testResponseDto = new TestResponseDto();
 
@@ -48,7 +61,7 @@ public class TestService {
         testResponseDto.setMessage("Incremented");
         testResponseDto.setCurrentCounterValue(testEntity.getCounter());
 
-        return  testResponseDto;
+        return testResponseDto;
     }
 
 }
