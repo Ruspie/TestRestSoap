@@ -24,6 +24,10 @@ public class TestService {
         return first + second;
     }
 
+    public Integer calc(int first, int second) {
+        return first * second;
+    }
+
     public TestResponseDto getCounterById(Long id) {
         try {
             log.info("Called getCounterById");
