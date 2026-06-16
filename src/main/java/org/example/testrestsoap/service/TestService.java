@@ -1,22 +1,36 @@
 package org.example.testrestsoap.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.testrestsoap.dto.TestIncrementRequestDto;
 import org.example.testrestsoap.dto.TestResponseDto;
 import org.example.testrestsoap.entity.TestEntity;
 import org.example.testrestsoap.repository.TestRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestService {
 
     private final TestRepository testRepository;
 
+    public Integer sum(Integer first, Integer second) {
+        return first + second;
+    }
+
     public TestResponseDto getCounterById(Long id) {
         try {
-            TestEntity testEntity = testRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Counter not found with id: " + id));
+            log.info("Called getCounterById");
+
+            Optional<TestEntity> testEntityOptional = testRepository.findById(id);
+
+            TestEntity testEntity = testEntityOptional.get();
 
             TestResponseDto testRequestDto = new TestResponseDto();
             testRequestDto.setId(testEntity.getId());
@@ -26,21 +40,20 @@ public class TestService {
 
             return testRequestDto;
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            throw e;
+            throw new RuntimeException("Counter not found");
         }
     }
 
     public TestResponseDto incrementCounter(TestIncrementRequestDto testRequestDto) {
-        // Находим текущее состояние
-        TestEntity testEntity = testRepository.findById(testRequestDto.getId())
-            .orElseThrow(() -> new RuntimeException("Data not found!"));
+        log.info("Called incrementCounter");
 
-        // Рассчитываем новое значение счетчика
+        TestEntity testEntity = testRepository.findById(testRequestDto.getId()).orElseThrow(() -> {
+            throw new RuntimeException("Data not found!");
+        });
+
         testEntity.setCounter(testEntity.getCounter().add(testRequestDto.getIncrementForCounter()));
 
-        // Сохраняем обратно в репозиторий
-        testEntity = testRepository.save(testEntity);
+        testRepository.save(testEntity);
 
         TestResponseDto testResponseDto = new TestResponseDto();
 

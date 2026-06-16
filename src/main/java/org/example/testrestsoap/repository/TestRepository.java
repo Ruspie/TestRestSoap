@@ -7,6 +7,6 @@ import java.util.Optional;
 public interface TestRepository {
 
     Optional<TestEntity> findById(Long id);
-    TestEntity save(TestEntity entity);
+    TestEntity save(TestEntity test);
 
 }

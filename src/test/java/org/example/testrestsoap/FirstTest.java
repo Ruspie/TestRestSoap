@@ -1,53 +1,68 @@
 package org.example.testrestsoap;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.testrestsoap.service.TestService;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-@DisplayName("Тестирование базовое")
+@DisplayName("Первый класс тестовый")
 public class FirstTest {
+
+    TestService testService;
 
     @BeforeAll
     static void initAll() {
-        log.info("Выполняется ОДИН раз перед абсолютно всеми тестами");
+        log.info("initAll ПЕРЕД ВСЕМИ ТЕСТАМИ");
     }
 
     @BeforeEach
     void init() {
-        log.info("Выполняется перед КАЖДЫМ тестовым методом");
+        testService = new TestService(null);
+        log.info("init ПЕРЕД КАЖДЫМ ТЕСТОМ");
     }
 
+    @DisplayName("Первый тест")
     @Test
-    @DisplayName("Проверка сложения двух чисел")
-    void testAddition() {
-        int result = 2 + 2;
-        log.info("Проверка сложения двух чисел");
-        assertEquals(4, result, "2 + 2 должно быть равно 4");
+    void firstTest() {
+        log.info("firstTest");
+        Integer expectedResult = 4;
+
+        Integer result = testService.sum(2, 2);
+
+        assertEquals(expectedResult, result);
+    }
+
+    @DisplayName("Второй тест")
+    @Test
+    @Disabled
+    void secondTest() {
+        log.info("secondTest");
+        Integer expectedResult = 4;
+
+        Integer result = testService.sum(2, 2);
+
+        assertEquals(expectedResult, result);
     }
 
     @RepeatedTest(value = 3, name = "Повторение {currentRepetition} из {totalRepetitions}")
     @DisplayName("Повторяющийся тест")
-    void testRepeated() {
-        // Этот метод выполнится ровно 3 раза подряд
-        log.info("Тест-шаблон выполняется повторно...");
-    }
-
-    @Disabled("Временно отключен, чиним баг #104")
-    @Test
-    void testDisabled() {
-        // Этот тест будет пропущен при запуске
+    void repeatableTest(){
+        log.info("repeatableTest");
     }
 
     @AfterEach
-    void tearDown() {
-        log.info("Выполняется после КАЖДОГО метода");
+    void down() {
+        log.info("down ПОСЛЕ КАЖДОГО ТЕСТА");
     }
 
     @AfterAll
-    static void tearDownAll() {
-        log.info("Выполняется ОДИН раз после всех тестов");
+    static void downAll() {
+        log.info("downAll ПОСЛЕ ВСЕХ ТЕСТОВ");
     }
+
+
+
 
 }

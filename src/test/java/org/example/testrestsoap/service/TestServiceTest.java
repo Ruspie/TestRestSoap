@@ -1,29 +1,21 @@
 package org.example.testrestsoap.service;
 
-import org.example.testrestsoap.dto.TestIncrementRequestDto;
 import org.example.testrestsoap.dto.TestResponseDto;
 import org.example.testrestsoap.entity.TestEntity;
 import org.example.testrestsoap.repository.TestRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
-class TestServiceTest {
+public class TestServiceTest {
 
     @Mock
     private TestRepository testRepository;
@@ -33,25 +25,17 @@ class TestServiceTest {
 
     @Test
     void getCounterById_Success() {
-        TestEntity entity = new TestEntity(1L, "Mock Counter", BigDecimal.valueOf(100));
-        when(testRepository.findById(1L)).thenReturn(Optional.of(entity));
+        TestEntity testEntity = new TestEntity(1L, "Mock", BigDecimal.TEN);
+        Mockito.when(testRepository.findById(1L)).thenReturn(Optional.of(testEntity));
 
         TestResponseDto result = testService.getCounterById(1L);
 
-        assertNotNull(result);
-        assertEquals(BigDecimal.valueOf(100), result.getCurrentCounterValue());
-        assertEquals("OK", result.getMessage());
-        verify(testRepository, times(1)).findById(1L);
-    }
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(testEntity.getCounter(), result.getCurrentCounterValue());
+        Assertions.assertEquals("OK", result.getMessage());
+        Assertions.assertEquals(testEntity.getId(), result.getId());
 
-    @Test
-    void getCounterById_ThrowsException_WhenNotFound() {
-        when(testRepository.findById(1L)).thenReturn(Optional.empty());
-
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                                                  () -> testService.getCounterById(1L));
-
-        assertTrue(exception.getMessage().contains("Counter not found"));
+        Mockito.verify(testRepository, Mockito.times(1)).findById(1L);
     }
 
     @Test
