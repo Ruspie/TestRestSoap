@@ -3,9 +3,7 @@ package org.example.testrestsoap.repository;
 import org.example.testrestsoap.entity.jpa.AddressEntity;
 import org.example.testrestsoap.entity.jpa.PassportEntity;
 import org.example.testrestsoap.entity.jpa.PersonEntity;
-import org.example.testrestsoap.repository.impl.JpaPersonRepositoryNewImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,7 @@ import java.util.List;
 public class JpaPersonRepositoryTest {
 
     @Autowired
-    private JpaPersonRepositoryNewImpl jpaPersonRepository;
+    private JpaPersonRepository jpaPersonRepository;
 
     private Long generatedId;
 
