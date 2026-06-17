@@ -5,13 +5,13 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.example.testrestsoap.entity.jpa.PersonEntity;
-import org.example.testrestsoap.repository.JpaPersonRepository;
+import org.example.testrestsoap.repository.PersonRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public class JpaPersonRepositoryImpl implements JpaPersonRepository {
+public class JpaPersonRepositoryImpl implements PersonRepository {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("PERSISTENCE");
 

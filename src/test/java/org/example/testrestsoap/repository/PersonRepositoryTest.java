@@ -12,10 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-public class JpaPersonRepositoryTest {
+public class PersonRepositoryTest {
 
     @Autowired
-    private JpaPersonRepository jpaPersonRepository;
+    private PersonRepository personRepository;
 
     private Long generatedId;
 
@@ -34,7 +34,7 @@ public class JpaPersonRepositoryTest {
         newPerson.setPrimaryAddress(address); // Many-to-One
 
         // Сохраняем в базу через JPA (сработают каскады CascadeType.ALL / PERSIST)
-        jpaPersonRepository.save(newPerson);
+        personRepository.save(newPerson);
 
         generatedId = newPerson.getId(); // Запоминаем сгенерированный базой ID
     }
@@ -42,7 +42,7 @@ public class JpaPersonRepositoryTest {
     @Test
     void testJpaWorkflow() {
         // 2. READ: Проверяем поиск сохраненного Person по живому ID
-        PersonEntity existingPerson = jpaPersonRepository.findById(generatedId);
+        PersonEntity existingPerson = personRepository.findById(generatedId);
         Assertions.assertNotNull(existingPerson);
         Assertions.assertEquals("Alex", existingPerson.getName());
 
@@ -52,18 +52,18 @@ public class JpaPersonRepositoryTest {
         Assertions.assertEquals("MP111111", existingPerson.getPassport().getPassportNumber());
 
         // 3. UPDATE: Тестируем изменение данных через Dirty Checking
-        jpaPersonRepository.updateName(generatedId, "Robert");
-        PersonEntity updatedPerson = jpaPersonRepository.findById(generatedId);
+        personRepository.updateName(generatedId, "Robert");
+        PersonEntity updatedPerson = personRepository.findById(generatedId);
         Assertions.assertEquals("Robert", updatedPerson.getName());
 
         // 4. READ via JPQL: Тестируем выборку через JPQL запрос из лекции
-        List<PersonEntity> jpqlResult = jpaPersonRepository.findByNameJpql("Robert");
+        List<PersonEntity> jpqlResult = personRepository.findByNameJpql("Robert");
         Assertions.assertFalse(jpqlResult.isEmpty());
         Assertions.assertEquals(1, jpqlResult.size());
 
         // 5. DELETE: Тестируем удаление
-        jpaPersonRepository.deleteById(generatedId);
-        PersonEntity deletedPerson = jpaPersonRepository.findById(generatedId);
+        personRepository.deleteById(generatedId);
+        PersonEntity deletedPerson = personRepository.findById(generatedId);
         Assertions.assertNull(deletedPerson); // Объект успешно удален!
     }
 

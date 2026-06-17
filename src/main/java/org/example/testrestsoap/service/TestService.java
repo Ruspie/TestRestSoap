@@ -40,7 +40,7 @@ public class TestService {
 
             return testRequestDto;
         } catch (Exception e) {
-            throw new RuntimeException("Counter not found");
+            throw new RuntimeException("Counter not found with id: " + id );
         }
     }
 

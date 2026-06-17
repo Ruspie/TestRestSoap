@@ -4,7 +4,7 @@ import org.example.testrestsoap.entity.jpa.PersonEntity;
 
 import java.util.List;
 
-public interface JpaPersonRepository {
+public interface PersonRepository {
 
     PersonEntity findById(Long id);
 
