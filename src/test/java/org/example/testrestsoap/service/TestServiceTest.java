@@ -14,6 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class TestServiceTest {
 
@@ -26,16 +29,26 @@ public class TestServiceTest {
     @Test
     void getCounterById_Success() {
         TestEntity testEntity = new TestEntity(1L, "Mock", BigDecimal.TEN);
-        Mockito.when(testRepository.findById(1L)).thenReturn(Optional.of(testEntity));
+        when(testRepository.findById(anyLong())).thenReturn(Optional.of(testEntity));
 
         TestResponseDto result = testService.getCounterById(1L);
 
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(testEntity.getCounter(), result.getCurrentCounterValue());
-        Assertions.assertEquals("OK", result.getMessage());
-        Assertions.assertEquals(testEntity.getId(), result.getId());
+        assertNotNull(result);
+        assertEquals(testEntity.getCounter(), result.getCurrentCounterValue());
+        assertEquals("OK", result.getMessage());
+        assertEquals(testEntity.getId(), result.getId());
 
-        Mockito.verify(testRepository, Mockito.times(1)).findById(1L);
+        verify(testRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getCounterById_ThrowsException_WhenNotFound() {
+        when(testRepository.findById(999L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> testService.getCounterById(999L));
+
+        assertEquals("Counter not found with id: 999", exception.getMessage());
     }
 
 }
