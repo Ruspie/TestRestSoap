@@ -5,6 +5,9 @@ import org.example.testrestsoap.repository.JpaPersonRepository;
 import org.example.testrestsoap.repository.impl.JpaPersonRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
@@ -13,7 +16,8 @@ public class TestRestSoapApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(TestRestSoapApplication.class, args);
 
-        JpaPersonRepositoryImpl jpaPersonRepository = context.getBean(JpaPersonRepositoryImpl.class);
+        //JpaPersonRepositoryImpl jpaPersonRepository = context.getBean(JpaPersonRepositoryImpl.class);
+        JpaPersonRepositoryImpl jpaPersonRepository = new JpaPersonRepositoryImpl();
 
         // 1. ПРОВЕРКА ПОИСКА (findById)
         System.out.println("\n=== Шаг 1: Тест поиска ===");
@@ -49,7 +53,7 @@ public class TestRestSoapApplication {
         }
 
 
-        // 1. ПРОВЕРКА ПОИСКА (findById)
+        /*// 1. ПРОВЕРКА ПОИСКА (findById)
         System.out.println("\n=== Шаг 1: Тест поиска ===");
         PersonEntity personEntityJpql = jpaPersonRepository.findByIdJpql(2L);
 
@@ -80,7 +84,7 @@ public class TestRestSoapApplication {
 
         } else {
             System.out.println("Пользователь с id 1 не найден. Проверьте выполнение data.sql!");
-        }
+        }*/
     }
 
 }

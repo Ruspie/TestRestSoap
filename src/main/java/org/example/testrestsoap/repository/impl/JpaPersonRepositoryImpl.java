@@ -1,98 +1,97 @@
 package org.example.testrestsoap.repository.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
 import org.example.testrestsoap.entity.jpa.PersonEntity;
 import org.example.testrestsoap.repository.JpaPersonRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
-@Repository
+//@Repository
+@RequiredArgsConstructor
 public class JpaPersonRepositoryImpl implements JpaPersonRepository {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    // Создаем фабрику сессий на основе hibernate.cfg.xml
+    private final SessionFactory sessionFactory = new Configuration()
+        .configure("hibernate.cfg.xml")
+        .buildSessionFactory();
+
+    //private final SessionFactory sessionFactory;
 
     @Override
-    @Transactional
     public PersonEntity findById(Long id) {
-        PersonEntity personEntity = entityManager.find(PersonEntity.class, id);
+        Transaction transaction = null;
+        // Открываем сессию Hibernate
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
 
-        if (personEntity != null) {
-            // Принудительно загружаем ленивую коллекцию в память, пока сессия открыта
-            personEntity.getWorkingPlaces().size();
-        }
+            // Ищем сущность по ID
+            PersonEntity personEntity = session.get(PersonEntity.class, id);
 
-        return personEntity;
-    }
+            if (personEntity != null) {
+                // Принудительно подгружаем ленивую коллекцию, пока сессия открыта
+                personEntity.getWorkingPlaces().size();
+            }
 
-    @Override
-    @Transactional
-    public void save(PersonEntity personEntity) {
-        entityManager.persist(personEntity);
-    }
-
-    @Override
-    @Transactional
-    public void update(PersonEntity personEntity) {
-        // merge обновляет состояние отсоединенной (detached) сущности в БД
-        entityManager.merge(personEntity);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Long id) {
-        PersonEntity personEntity = entityManager.find(PersonEntity.class, id);
-        if (personEntity != null) {
-            entityManager.remove(personEntity);
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public PersonEntity findByIdJpql(Long id) {
-        String jpql = "SELECT p FROM PersonEntity p " +
-                      "LEFT JOIN FETCH p.passport " +
-                      "LEFT JOIN FETCH p.primaryAddress " +
-                      "LEFT JOIN FETCH p.workingPlaces " +
-                      "WHERE p.id = :personId";
-
-        try {
-            PersonEntity personEntity = entityManager.createQuery(jpql, PersonEntity.class)
-                .setParameter("personId", id)
-                .getSingleResult();
+            transaction.commit();
             return personEntity;
-        } catch (NoResultException e) {
+        } catch (Exception ex) {
+            if (transaction != null) transaction.rollback();
+            ex.printStackTrace();
             return null;
         }
-
     }
 
-    @Transactional
-    public void saveJpql(PersonEntity personEntity) {
-        // Для сохранения НОВЫХ сущностей JPQL (INSERT INTO) не поддерживается спецификацией.
-        // Стандарт предписывает использовать persist.
-        entityManager.persist(personEntity);
+    @Override
+    public void save(PersonEntity personEntity) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+
+            // Операция добавления (сохранения) в Hibernate
+            session.persist(personEntity);
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            System.out.println("Ошибка при добавлении: " + e.getMessage());
+        }
     }
 
-    @Transactional
-    public void updateJpql(PersonEntity personEntity) {
-        // JPQL-запрос обновления. Обратите внимание: работаем со свойствами класса, а не колонками таблицы!
-        String jpql = "UPDATE PersonEntity p SET p.name = :newName WHERE p.id = :personId";
+    @Override
+    public void update(PersonEntity personEntity) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
 
-        int updatedRows = entityManager.createQuery(jpql)
-            .setParameter("newName", personEntity.getName())
-            .setParameter("personId", personEntity.getId())
-            .executeUpdate(); // Для UPDATE/DELETE всегда используем executeUpdate()
+            // Операция изменения (обновления). Склеивает отсоединенный объект с базой
+            session.merge(personEntity);
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            System.out.println("Ошибка при изменении: " + e.getMessage());
+        }
     }
 
-    @Transactional
-    public void deleteByIdJpql(Long id) {
-        String jpql = "DELETE FROM PersonEntity p WHERE p.id = :personId";
+    @Override
+    public void deleteById(Long id) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
 
-        int deletedRows = entityManager.createQuery(jpql)
-            .setParameter("personId", id)
-            .executeUpdate();
+            // Сначала находим объект в текущей сессии
+            PersonEntity personEntity = session.get(PersonEntity.class, id);
+            if (personEntity != null) {
+                // Операция удаления
+                session.remove(personEntity);
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            System.out.println("Ошибка при удалении: " + e.getMessage());
+        }
     }
-
 }
