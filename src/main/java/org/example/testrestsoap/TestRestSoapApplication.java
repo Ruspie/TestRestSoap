@@ -51,7 +51,7 @@ public class TestRestSoapApplication {
 
         // 1. ПРОВЕРКА ПОИСКА (findById)
         System.out.println("\n=== Шаг 1: Тест поиска ===");
-        PersonEntity personEntityJpql = jpaPersonRepository.findByIdJpql(1L);
+        PersonEntity personEntityJpql = jpaPersonRepository.findByIdJpql(2L);
 
         if (personEntityJpql != null) {
             System.out.println("Паспорт: " + personEntityJpql.getPassport());
@@ -67,7 +67,7 @@ public class TestRestSoapApplication {
             jpaPersonRepository.updateJpql(personEntityJpql);
 
             // Проверяем, изменилось ли имя в базе данных
-            PersonEntity updatedPersonJpql = jpaPersonRepository.findByIdJpql(1L);
+            PersonEntity updatedPersonJpql = jpaPersonRepository.findByIdJpql(2L);
             System.out.println("Новое имя из БД: " + updatedPersonJpql.getName());
 
             // 3. ПРОВЕРКА УДАЛЕНИЯ (deleteById)
