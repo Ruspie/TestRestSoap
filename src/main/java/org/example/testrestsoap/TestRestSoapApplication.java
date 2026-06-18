@@ -33,7 +33,7 @@ public class TestRestSoapApplication {
 
         System.out.println(personEntitySaved);
 
-        PersonEntity personEntity = jpaPersonRepository.findByIdJpql(1L);
+        PersonEntity personEntity = jpaPersonRepository.findById(1L);
 
         personEntity.getWorkingPlaces().size();
 
@@ -44,18 +44,18 @@ public class TestRestSoapApplication {
 
         personEntity.setName("Alexander");
 
-        jpaPersonRepository.updateJpql(personEntity);
+        jpaPersonRepository.update(personEntity);
 
         personEntity.setName("TEST");
 
-        PersonEntity personEntityAfterUpdate = jpaPersonRepository.findByIdJpql(1L);
+        PersonEntity personEntityAfterUpdate = jpaPersonRepository.findById(1L);
 
         System.out.println(personEntity);
         System.out.println(personEntityAfterUpdate);
 
-        jpaPersonRepository.deleteByIdJpql(personEntityAfterUpdate.getId());
+        jpaPersonRepository.deleteById(personEntityAfterUpdate.getId());
 
-        PersonEntity personEntityAfterDelete = jpaPersonRepository.findByIdJpql(1L);
+        PersonEntity personEntityAfterDelete = jpaPersonRepository.findById(1L);
         System.out.println(personEntityAfterDelete);
     }
 
