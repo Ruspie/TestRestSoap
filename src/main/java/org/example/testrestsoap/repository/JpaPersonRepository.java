@@ -6,7 +6,7 @@ public interface JpaPersonRepository {
 
     PersonEntity findById(Long id);
     void save(PersonEntity personEntity);
-    void updateName(Long id, String name);
+    void update(PersonEntity personEntity);
     void deleteById(Long id);
 
 }

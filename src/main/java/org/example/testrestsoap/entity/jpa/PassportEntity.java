@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @Table(name = "passports")
-@ToString
+@ToString(exclude = "owner")
 public class PassportEntity {
 
     @Id

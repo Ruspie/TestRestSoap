@@ -13,7 +13,7 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor
 @Table(name = "persons")
-@ToString
+@ToString(exclude = "workingPlaces")
 public class PersonEntity {
 
     @Id
@@ -31,12 +31,12 @@ public class PersonEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressEntity primaryAddress;
 
-    /*@ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "person_companies",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "company_id")
     )
-    private Collection<CompanyEntity> workingPlaces;*/
+    private Collection<CompanyEntity> workingPlaces;
 
 }

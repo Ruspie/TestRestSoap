@@ -4,6 +4,7 @@ import org.example.testrestsoap.entity.jpa.AddressEntity;
 import org.example.testrestsoap.entity.jpa.PassportEntity;
 import org.example.testrestsoap.entity.jpa.PersonEntity;
 import org.example.testrestsoap.repository.JpaPersonRepository;
+import org.example.testrestsoap.repository.impl.JpaPersonRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -14,7 +15,7 @@ public class TestRestSoapApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(TestRestSoapApplication.class, args);
 
-        JpaPersonRepository jpaPersonRepository = context.getBean(JpaPersonRepository.class);
+        JpaPersonRepositoryImpl jpaPersonRepository = context.getBean(JpaPersonRepositoryImpl.class);
 
         PersonEntity personEntityForSave = new PersonEntity();
         PassportEntity passportForSave = new PassportEntity();
@@ -28,11 +29,34 @@ public class TestRestSoapApplication {
 
         jpaPersonRepository.save(personEntityForSave);
 
-        PersonEntity personEntity = jpaPersonRepository.findById(1L);
+        PersonEntity personEntitySaved = jpaPersonRepository.findById(3L);
 
+        System.out.println(personEntitySaved);
+
+        PersonEntity personEntity = jpaPersonRepository.findByIdJpql(1L);
+
+        personEntity.getWorkingPlaces().size();
+
+        System.out.println(personEntity);
         System.out.println(personEntity.getPassport());
         System.out.println(personEntity.getPrimaryAddress());
-        //System.out.println(personEntity.getWorkingPlaces());
+        System.out.println(personEntity.getWorkingPlaces());
+
+        personEntity.setName("Alexander");
+
+        jpaPersonRepository.updateJpql(personEntity);
+
+        personEntity.setName("TEST");
+
+        PersonEntity personEntityAfterUpdate = jpaPersonRepository.findByIdJpql(1L);
+
+        System.out.println(personEntity);
+        System.out.println(personEntityAfterUpdate);
+
+        jpaPersonRepository.deleteByIdJpql(personEntityAfterUpdate.getId());
+
+        PersonEntity personEntityAfterDelete = jpaPersonRepository.findByIdJpql(1L);
+        System.out.println(personEntityAfterDelete);
     }
 
 }

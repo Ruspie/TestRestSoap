@@ -13,7 +13,7 @@ import java.util.Collection;
 @Setter
 @Table(name = "companies")
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "workers")
 public class CompanyEntity {
 
     @Id
@@ -23,7 +23,7 @@ public class CompanyEntity {
     @Column(nullable = false)
     private String title;
 
-    /*@ManyToMany(mappedBy = "workingPlaces")
-    private Collection<PersonEntity> workers;*/
+    @ManyToMany(mappedBy = "workingPlaces")
+    private Collection<PersonEntity> workers;
 
 }
