@@ -13,7 +13,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "tenants")
 public class AddressEntity extends AbstractIndentifiableObject {
 
     @Column(name = "city", nullable = false)
