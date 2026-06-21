@@ -16,6 +16,7 @@ public class TestRestSoapApplication {
         ConfigurableApplicationContext context = SpringApplication.run(TestRestSoapApplication.class, args);
 
         JpaPersonRepositoryImpl jpaPersonRepository = context.getBean(JpaPersonRepositoryImpl.class);
+        //JpaPersonRepositoryImpl jpaPersonRepository = new JpaPersonRepositoryImpl();
 
         PersonEntity personEntityForSave = new PersonEntity();
         PassportEntity passportForSave = new PassportEntity();
