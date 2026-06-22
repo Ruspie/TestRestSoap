@@ -21,51 +21,51 @@ public class PersonRepositoryCustomImpl implements PersonRepositoryCustom {
 
     @Override
     public List<PersonEntity> findByMultiCriteria(String namePart, Integer minAge, Integer maxAge, String city) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<PersonEntity> query = cb.createQuery(PersonEntity.class);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PersonEntity> query = criteriaBuilder.createQuery(PersonEntity.class);
         Root<PersonEntity> personRoot = query.from(PersonEntity.class);
 
         List<Predicate> predicates = new ArrayList<>();
 
         // 1. Фильтр LIKE
         if (namePart != null && !namePart.isEmpty()) {
-            predicates.add(cb.like(personRoot.get("name"), "%" + namePart + "%"));
+            predicates.add(criteriaBuilder.like(personRoot.get("name"), "%" + namePart + "%"));
         }
 
         // 2. Фильтр BETWEEN
         if (minAge != null && maxAge != null) {
-            predicates.add(cb.between(personRoot.get("age"), minAge, maxAge));
+            predicates.add(criteriaBuilder.between(personRoot.get("age"), minAge, maxAge));
         }
 
         // 3. Сравнения Больше/Меньше
         if (minAge != null && maxAge == null) {
-            predicates.add(cb.gt(personRoot.get("age"), minAge)); // Strictly Greater Than
+            predicates.add(criteriaBuilder.gt(personRoot.get("age"), minAge)); // Strictly Greater Than
         }
 
         // 4. JOIN ассоциаций
         if (city != null && !city.isEmpty()) {
             Join<PersonEntity, AddressEntity> addressJoin = personRoot.join("primaryAddress");
-            predicates.add(cb.equal(addressJoin.get("city"), city));
+            predicates.add(criteriaBuilder.equal(addressJoin.get("city"), city));
         }
 
         // Применяем предикаты в WHERE
         if (!predicates.isEmpty()) {
-            query.where(cb.and(predicates.toArray(new Predicate[0])));
+            query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
         }
 
         // 5. Сортировка ORDER BY
-        query.orderBy(cb.desc(personRoot.get("age")), cb.asc(personRoot.get("name")));
+        query.orderBy(criteriaBuilder.desc(personRoot.get("age")), criteriaBuilder.asc(personRoot.get("name")));
 
         return entityManager.createQuery(query).getResultList();
     }
 
     @Override
     public Long countTotalPersonsByCriteria() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         Root<PersonEntity> root = query.from(PersonEntity.class);
 
-        query.select(cb.count(root));
+        query.select(criteriaBuilder.count(root));
 
         return entityManager.createQuery(query).getSingleResult();
     }
