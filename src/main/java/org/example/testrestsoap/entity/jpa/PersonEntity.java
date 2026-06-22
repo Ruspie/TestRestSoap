@@ -23,11 +23,14 @@ public class PersonEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "age")
+    private Integer age;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private PassportEntity passport;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressEntity primaryAddress;
 
