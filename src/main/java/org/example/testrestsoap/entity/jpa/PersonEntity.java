@@ -23,6 +23,9 @@ public class PersonEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private Long age;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private PassportEntity passport;
