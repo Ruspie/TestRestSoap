@@ -49,4 +49,15 @@ public interface JpaPersonRepository extends JpaRepository<PersonEntity, Long>, 
 
     boolean existsByPassportPassportNumber(String passportNumber);
 
+    @Query(value = "SELECT * FROM persons WHERE name LIKE CONCAT('%', :namePart, '%')", nativeQuery = true)
+    List<PersonEntity> findByNameNativeSQL(@Param("namePart") String namePart);
+
+    @Query(value = """
+        SELECT p.* FROM persons p
+        JOIN person_companies pc ON p.id = pc.person_id
+        JOIN companies c ON pc.company_id = c.id
+        WHERE c.title = :companyTitle
+        """, nativeQuery = true)
+    List<PersonEntity> findWorkersByCompanyNameNativeSQL(@Param("companyTitle") String companyTitle);
+
 }
