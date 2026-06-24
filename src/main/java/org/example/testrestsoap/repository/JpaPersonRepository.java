@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaPersonRepository extends JpaRepository<PersonEntity, Long>, JpaPersonRepositoryCustom {
+public interface JpaPersonRepository extends JpaRepository<PersonEntity, Long>, JpaPersonRepositoryCustom, JpaPersonRepositoryQueryDsl {
 
     @Query("FROM PersonEntity")
     List<PersonEntity> findAllHql();
@@ -36,5 +36,17 @@ public interface JpaPersonRepository extends JpaRepository<PersonEntity, Long>, 
 
     @Query("SELECT p FROM PersonEntity p JOIN FETCH p.passport WHERE p.passport.passportNumber = :passportNumber")
     Optional<PersonEntity> findByPassportNumberOptionalHql(@Param("passportNumber") String passportNumber);
+
+    /// /////////////
+
+    List<PersonEntity> findByName(String name);
+
+    List<PersonEntity> findByAgeBetween(Long minAge, Long maxAge);
+
+    List<PersonEntity> findByNameContainingIgnoreCase(String namePart);
+
+    List<PersonEntity> findByPrimaryAddressCity(String city);
+
+    boolean existsByPassportPassportNumber(String passportNumber);
 
 }
