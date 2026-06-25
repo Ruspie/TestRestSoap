@@ -9,6 +9,7 @@ import org.example.testrestsoap.entity.jpa.PassportEntity;
 import org.example.testrestsoap.entity.jpa.PersonEntity;
 import org.example.testrestsoap.repository.JpaPersonRepositoryCustom;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;

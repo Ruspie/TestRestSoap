@@ -41,6 +41,6 @@ VALUES ('Minsk');
 INSERT INTO persons (name, passport_id, address_id, age)
 VALUES ('Alex', 4, 4, 24);
 INSERT INTO companies (title)
-VALUES ('Post Office');
+VALUES ('Bank');
 INSERT INTO person_companies (person_id, company_id)
 VALUES (4, 4);
