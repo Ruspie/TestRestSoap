@@ -1,5 +1,6 @@
 package org.example.testrestsoap.entity.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class PersonEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressEntity primaryAddress;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "person_companies",

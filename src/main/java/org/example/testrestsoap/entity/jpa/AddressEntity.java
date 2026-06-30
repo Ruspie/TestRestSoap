@@ -1,5 +1,6 @@
 package org.example.testrestsoap.entity.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class AddressEntity extends AbstractIndentifiableObject {
     @Column(name = "city", nullable = false)
     private String city;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "primaryAddress", fetch = FetchType.LAZY)
     private Collection<PersonEntity> tenants;
 

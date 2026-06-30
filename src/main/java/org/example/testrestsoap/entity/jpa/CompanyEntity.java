@@ -1,5 +1,6 @@
 package org.example.testrestsoap.entity.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class CompanyEntity {
     @Column(nullable = false)
     private String title;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "workingPlaces")
     private Collection<PersonEntity> workers;
 

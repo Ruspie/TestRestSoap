@@ -1,9 +1,6 @@
 package org.example.testrestsoap.config;
 
-import org.example.testrestsoap.entity.jpa.AddressEntity;
-import org.example.testrestsoap.entity.jpa.CompanyEntity;
-import org.example.testrestsoap.entity.jpa.PassportEntity;
-import org.example.testrestsoap.entity.jpa.PersonEntity;
+import org.example.testrestsoap.entity.jpa.*;
 import org.hibernate.cfg.Environment;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +31,8 @@ public class HibernateConfig {
                 PersonEntity.class,
                 PassportEntity.class,
                 AddressEntity.class,
-                CompanyEntity.class
+                CompanyEntity.class,
+                UserEntity.class
         );
 
         return sessionFactoryBean;

@@ -1,5 +1,6 @@
 package org.example.testrestsoap.entity.jpa;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class PassportEntity {
     @Column(name = "passport_number", nullable = false)
     private String passportNumber;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "passport", fetch = FetchType.LAZY)
     private PersonEntity owner;
 
