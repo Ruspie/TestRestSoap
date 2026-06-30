@@ -1,3 +1,11 @@
+/*TRUNCATE TABLE person_companies;
+TRUNCATE TABLE users;
+TRUNCATE TABLE test_counters;
+TRUNCATE TABLE companies;
+TRUNCATE TABLE addresses;
+TRUNCATE TABLE passports;
+TRUNCATE TABLE persons;
+*/
 INSERT INTO test_counters (name, counter) VALUES ('test1', 111.0000);
 INSERT INTO test_counters (name, counter) VALUES ('test2', 222.0000);
 
@@ -44,3 +52,11 @@ INSERT INTO companies (title)
 VALUES ('Bank');
 INSERT INTO person_companies (person_id, company_id)
 VALUES (4, 4);
+
+-- Связываем аккаунт 'user' с Ильей (person_id = 1)
+INSERT INTO users (username, password, role, person_id)
+VALUES ('user', '$2a$10$8.g9I.qCisw7qWnClyv7AOnN9v2uM7K8i7N5k6h9oR8A0P1Gz6Z2.', 'ROLE_USER', 1);
+
+-- Связываем аккаунт 'admin' с Иваном (person_id = 2)
+INSERT INTO users (username, password, role, person_id)
+VALUES ('admin', '$2a$10$8.g9I.qCisw7qWnClyv7AOnN9v2uM7K8i7N5k6h9oR8A0P1Gz6Z2.', 'ROLE_ADMIN', 2);
