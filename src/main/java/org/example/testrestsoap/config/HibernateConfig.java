@@ -32,7 +32,8 @@ public class HibernateConfig {
                 PassportEntity.class,
                 AddressEntity.class,
                 CompanyEntity.class,
-                UserEntity.class
+                UserEntity.class,
+                RefreshTokenEntity.class
         );
 
         return sessionFactoryBean;

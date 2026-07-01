@@ -17,7 +17,7 @@ public class PersonController {
     private final PersonService personService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<List<PersonEntity>> getPersonsWithPagination(@RequestParam(defaultValue = "10") int limit, @RequestParam(defaultValue = "0") int offset) {
         return ResponseEntity.ok().body(personService.getPersonsWithPagination(limit, offset));
     }
@@ -30,7 +30,7 @@ public class PersonController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEST')")
     public ResponseEntity<List<PersonEntity>> getAllPersons() {
         return ResponseEntity.ok().body(personService.getAllPersons());
     }

@@ -1,5 +1,6 @@
 package org.example.testrestsoap.config;
 
+import lombok.RequiredArgsConstructor;
 import org.example.testrestsoap.entity.jpa.UserEntity;
 import org.example.testrestsoap.service.CustomUserDetailsService;
 import org.hibernate.Session;
@@ -7,43 +8,43 @@ import org.hibernate.SessionFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecureConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService userDetailsService) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Без сессий
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "swagger-ui.html"
+                                "swagger-ui.html",
+                                "/api/auth/**" // Разрешаем логин и рефреш всем
                         ).permitAll()
                         .requestMatchers("/h2-console/**").denyAll()
-                        .requestMatchers("/api/persons").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/persons/{id}/age").hasRole("ADMIN")
-                        .requestMatchers("/api/persons/**").authenticated()
-                        .anyRequest().denyAll()
-
+                        .anyRequest().authenticated() // Все остальные эндпоинты закрыты, роли проверяются в контроллерах
                 )
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/swagger-ui/index.html", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
                 .build();
     }
@@ -51,6 +52,14 @@ public class SecureConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(provider);
     }
 
     @Bean
