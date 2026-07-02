@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
+import org.example.testrestsoap.config.JwtProperties;
 import org.example.testrestsoap.entity.jpa.RefreshTokenEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,13 +24,10 @@ import java.util.UUID;
 public class JwtService {
 
     private final SessionFactory sessionFactory;
-
-    private final String SECRET = "9a75v3b8c2d1e4f5g6h7j8k9l0m1n2p3r4s5t6u7v8w9x0z";
-    private final Duration ACCESS_TOKEN_LIFETIME = Duration.ofMinutes(15);  // Срок жизни Access Token
-    private final Duration REFRESH_TOKEN_LIFETIME = Duration.ofDays(7);     // Срок жизни Refresh Token
+    private final JwtProperties jwtProperties; // Внедряем конфигурацию из YAML
 
     public String generateAccessToken(UserDetails userDetails) {
-        Algorithm algorithm = Algorithm.HMAC256(SECRET);
+        Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecret());
 
         List<String> rolesAndAuthorities = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -38,8 +36,8 @@ public class JwtService {
         return JWT.create()
                 .withSubject(userDetails.getUsername())
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_LIFETIME.toMillis()))
-                .withClaim("roles", rolesAndAuthorities) // Роли и кастомные Authorities в одном массиве
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration().toMillis()))
+                .withClaim("roles", rolesAndAuthorities)
                 .sign(algorithm);
     }
 
@@ -47,7 +45,6 @@ public class JwtService {
     public String generateRefreshToken(String username) {
         Session session = sessionFactory.getCurrentSession();
 
-        // Удаляем старые рефреш токены пользователя, чтобы не плодить сессии
         session.createMutationQuery("DELETE FROM RefreshTokenEntity WHERE username = :username")
                 .setParameter("username", username)
                 .executeUpdate();
@@ -56,14 +53,14 @@ public class JwtService {
         RefreshTokenEntity refreshToken = new RefreshTokenEntity();
         refreshToken.setToken(token);
         refreshToken.setUsername(username);
-        refreshToken.setExpiryDate(Instant.now().plus(REFRESH_TOKEN_LIFETIME));
+        refreshToken.setExpiryDate(Instant.now().plus(jwtProperties.getRefreshTokenExpiration())); // Берем Duration из YAML
 
         session.persist(refreshToken);
         return token;
     }
 
     public DecodedJWT verifyAccessToken(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(SECRET);
+        Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecret());
         return JWT.require(algorithm).build().verify(token);
     }
 

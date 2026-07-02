@@ -28,21 +28,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecureConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final DynamicAccessChecker accessChecker;
+    private final CustomAuthentificationHandler authentificationHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService userDetailsService) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Без сессий
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "swagger-ui.html",
-                                "/api/auth/**" // Разрешаем логин и рефреш всем
+                                "/api/auth/**"
                         ).permitAll()
                         .requestMatchers("/h2-console/**").denyAll()
-                        .anyRequest().authenticated() // Все остальные эндпоинты закрыты, роли проверяются в контроллерах
+                        .anyRequest().access((authentication, context) ->
+                                new org.springframework.security.authorization.AuthorizationDecision(
+                                        accessChecker.check(context.getRequest())
+                                )
+                        )
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedHandler(authentificationHandler)         // Для 403
+                        .authenticationEntryPoint(authentificationHandler) // Для 401
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
